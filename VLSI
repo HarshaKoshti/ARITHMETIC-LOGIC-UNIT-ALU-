@@ -1,0 +1,44 @@
+
+module ALU (
+    input [3:0] A,
+    input [3:0] B,
+    input [2:0] sel,
+    output reg [3:0] Y,
+    output reg carry,
+    output reg zero
+);
+
+reg [4:0] temp; // for carry
+
+always @(*) 
+begin
+    carry = 0;
+
+    case(sel)
+        3'b000: begin
+            temp = A + B;
+            Y = temp[3:0];
+            carry = temp[4];
+        end
+
+        3'b001: begin
+            temp = A - B;
+            Y = temp[3:0];
+            carry = temp[4]; // borrow
+        end
+
+        3'b010: Y = A & B;
+        3'b011: Y = A | B;
+        3'b100: Y = ~A;
+
+        default: Y = 4'b0000;
+    endcase
+
+    // Zero flag
+    if (Y == 4'b0000)
+        zero = 1;
+    else
+        zero = 0;
+end
+
+endmodule
